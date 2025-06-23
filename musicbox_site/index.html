@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古典音楽館</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(45deg, #2c1810 0%, #1a0f0a 50%, #0d0704 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(101, 67, 33, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .music-hall {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.9) 0%, rgba(101, 67, 33, 0.85) 100%);
+            border: 3px solid #8b4513;
+            border-radius: 0;
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(139, 69, 19, 0.3),
+                0 20px 40px rgba(0, 0, 0, 0.7);
+            max-width: 900px;
+            width: 95%;
+            padding: 50px 40px;
+            position: relative;
+        }
+
+        .music-hall::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(205, 133, 63, 0.3);
+            pointer-events: none;
+        }
+
+        .title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            color: #d4af37;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #cd853f;
+            margin-bottom: 50px;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .composer-section {
+            margin-bottom: 60px;
+            border: 2px solid #8b4513;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        .composer-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #8b4513;
+            padding-bottom: 15px;
+        }
+
+        .composer-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            color: #d4af37;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .composer-years {
+            font-size: 1.1rem;
+            color: #cd853f;
+            font-style: italic;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .work-panel {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #8b4513;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .work-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .work-panel:hover::before {
+            left: 100%;
+        }
+
+        .work-panel:hover {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .work-panel.playing {
+            border-color: #ffd700;
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 
+                0 0 25px rgba(255, 215, 0, 0.6),
+                inset 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .work-content {
+            padding: 25px 20px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .work-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #d4af37;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .work-subtitle {
+            font-size: 0.95rem;
+            color: #cd853f;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .work-panel .play-symbol {
+            font-size: 2rem;
+            color: #8b4513;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .work-panel:hover .play-symbol {
+            color: #d4af37;
+            transform: scale(1.2);
+        }
+
+        .work-panel.playing .play-symbol {
+            color: #ffd700;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .composer-panel {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #8b4513;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .composer-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .composer-panel:hover::before {
+            left: 100%;
+        }
+
+        .composer-panel:hover {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .composer-panel.playing {
+            border-color: #ffd700;
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 
+                0 0 25px rgba(255, 215, 0, 0.6),
+                inset 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .panel-content {
+            padding: 30px 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .composer-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .composition {
+            font-size: 1rem;
+            color: #cd853f;
+            text-align: center;
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .play-symbol {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #8b4513;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .composer-panel:hover .play-symbol {
+            color: #d4af37;
+            transform: scale(1.2);
+        }
+
+        .composer-panel.playing .play-symbol {
+            color: #ffd700;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
+
+        .control-chamber {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #8b4513;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, #8b4513 0%, #654321 100%);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .control-button:hover {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+            color: #2c1810;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+        }
+
+        .volume-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #cd853f;
+        }
+
+        .volume-slider {
+            width: 120px;
+            height: 8px;
+            background: #654321;
+            border: 1px solid #8b4513;
+            outline: none;
+            -webkit-appearance: none;
+            position: relative;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #d4af37;
+            border: 2px solid #8b4513;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .status-chamber {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #8b4513;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .status-chamber.active {
+            opacity: 1;
+        }
+
+        .status-text {
+            color: #d4af37;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .ornament {
+            position: absolute;
+            color: rgba(212, 175, 55, 0.2);
+            font-size: 4rem;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .ornament.top-left {
+            top: 20px;
+            left: 20px;
+            transform: rotate(-15deg);
+        }
+
+        .ornament.top-right {
+            top: 20px;
+            right: 20px;
+            transform: rotate(15deg);
+        }
+
+        .ornament.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            transform: rotate(15deg);
+        }
+
+        .ornament.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            transform: rotate(-15deg);
+        }
+
+        .era-info {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: rgba(205, 133, 63, 0.6);
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="music-hall">
+            <div class="ornament top-left">❦</div>
+            <div class="ornament top-right">❦</div>
+            <div class="ornament bottom-left">❦</div>
+            <div class="ornament bottom-right">❦</div>
+            
+            <h1 class="title">Musica Classica</h1>
+            <p class="subtitle">~ 古典音楽の殿堂 ~</p>
+            
+            <div class="composers-sections">
+                <!-- ショパン -->
+                <div class="composer-section">
+                    <div class="composer-header">
+                        <h2 class="composer-title">Frédéric Chopin</h2>
+                        <div class="composer-years">(1810-1849)</div>
+                    </div>
+                    <div class="works-grid">
+                        <div class="work-panel" data-composer="ショパン" data-work="ノクターン" data-piece="Nocturne Op.9 No.2">
+                            <div class="work-content">
+                                <div class="work-title">Nocturne Op.9 No.2</div>
+                                <div class="work-subtitle">ノクターン第2番 変ホ長調</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        
+                        <div class="work-panel" data-composer="ショパン" data-work="英雄" data-piece="Polonaise Op.53 'Heroic'">
+                            <div class="work-content">
+                                <div class="work-title">Polonaise Op.53</div>
+                                <div class="work-subtitle">ポロネーズ「英雄」</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        
+                        <div class="work-panel" data-composer="ショパン" data-work="別れの曲" data-piece="Étude Op.10 No.3 'Tristesse'">
+                            <div class="work-content">
+                                <div class="work-title">Étude Op.10 No.3</div>
+                                <div class="work-subtitle">練習曲「別れの曲」</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- バッハ -->
+                <div class="composer-section">
+                    <div class="composer-header">
+                        <h2 class="composer-title">Johann Sebastian Bach</h2>
+                        <div class="composer-years">(1685-1750)</div>
+                    </div>
+                    <div class="works-grid">
+                        <div class="work-panel" data-composer="バッハ" data-work="G線上のアリア" data-piece="Air on the G String">
+                            <div class="work-content">
+                                <div class="work-title">Air on the G String</div>
+                                <div class="work-subtitle">管弦楽組曲第3番より</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        
+                        <div class="work-panel" data-composer="バッハ" data-work="インヴェンション" data-piece="Invention No.1 BWV 772">
+                            <div class="work-content">
+                                <div class="work-title">Invention No.1</div>
+                                <div class="work-subtitle">インヴェンション第1番</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ベートーヴェン -->
+                <div class="composer-section">
+                    <div class="composer-header">
+                        <h2 class="composer-title">Ludwig van Beethoven</h2>
+                        <div class="composer-years">(1770-1827)</div>
+                    </div>
+                    <div class="works-grid">
+                        <div class="work-panel" data-composer="ベートーヴェン" data-work="第9番" data-piece="Symphony No.9 'Ode to Joy'">
+                            <div class="work-content">
+                                <div class="work-title">Symphony No.9</div>
+                                <div class="work-subtitle">交響曲第9番「歓喜の歌」</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        
+                        <div class="work-panel" data-composer="ベートーヴェン" data-work="エリーゼ" data-piece="Für Elise WoO 59">
+                            <div class="work-content">
+                                <div class="work-title">Für Elise</div>
+                                <div class="work-subtitle">エリーゼのために</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        
+                        <div class="work-panel" data-composer="ベートーヴェン" data-work="悲愴" data-piece="Piano Sonata No.8 'Grande Sonate pathetique'">
+                            <div class="work-content">
+                                <div class="work-title">Piano Sonata No.8</div>
+                                <div class="work-subtitle">ピアノソナタ「悲愴」</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ドビュッシー -->
+                <div class="composer-section">
+                    <div class="composer-header">
+                        <h2 class="composer-title">Claude Debussy</h2>
+                        <div class="composer-years">(1862-1918)</div>
+                    </div>
+                    <div class="works-grid">
+                        <div class="work-panel" data-composer="ドビュッシー" data-work="亜麻色の髪の乙女" data-piece="La Fille aux Cheveux de Lin">
+                            <div class="work-content">
+                                <div class="work-title">La Fille aux Cheveux de Lin</div>
+                                <div class="work-subtitle">前奏曲集第1巻「亜麻色の髪の乙女」</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        
+                        <div class="work-panel" data-composer="ドビュッシー" data-work="月の光" data-piece="Clair de Lune">
+                            <div class="work-content">
+                                <div class="work-title">Clair de Lune</div>
+                                <div class="work-subtitle">ベルガマスク組曲「月の光」</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- モーツァルト -->
+                <div class="composer-section">
+                    <div class="composer-header">
+                        <h2 class="composer-title">Wolfgang Amadeus Mozart</h2>
+                        <div class="composer-years">(1756-1791)</div>
+                    </div>
+                    <div class="works-grid">
+                        <div class="work-panel" data-composer="モーツァルト" data-work="アイネクライネ" data-piece="Eine kleine Nachtmusik">
+                            <div class="work-content">
+                                <div class="work-title">Eine kleine Nachtmusik</div>
+                                <div class="work-subtitle">セレナード第13番</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        
+                        <div class="work-panel" data-composer="モーツァルト" data-work="トルコ行進曲" data-piece="Piano Sonata No.11 'Turkish March'">
+                            <div class="work-content">
+                                <div class="work-title">Turkish March</div>
+                                <div class="work-subtitle">ピアノソナタ「トルコ行進曲」</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ヴィヴァルディ -->
+                <div class="composer-section">
+                    <div class="composer-header">
+                        <h2 class="composer-title">Antonio Lucio Vivaldi</h2>
+                        <div class="composer-years">(1678-1741)</div>
+                    </div>
+                    <div class="works-grid">
+                        <div class="work-panel" data-composer="ヴィヴァルディ" data-work="冬" data-piece="Winter">
+                            <div class="work-content">
+                                <div class="work-title">Four Seasons Op.8 "Winter"</div>
+                                <div class="work-subtitle">《四季》から 「冬」 第1楽章</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                        <div class="work-panel" data-composer="ヴィヴァルディ" data-work="春" data-piece="Spring">
+                            <div class="work-content">
+                                <div class="work-title">Four Seasons Op.8 "Spring"</div>
+                                <div class="work-subtitle">《四季》から 「春」 第1楽章</div>
+                                <div class="play-symbol">◆</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone.js/14.8.49/Tone.min.js"></script>
+
+    <!-- オーディオタグ -->
+    <audio id="audio-nocturne" src="audio/041-Chopin-Nocturne-No2.mp3"></audio>
+    <audio id="audio-heroic" src="audio/Chopin-Poronase-No6-Heroic-2019-AR.mp3"></audio>
+    <audio id="audio-tristesse" src="audio/Chopin-Etude-wakareno.mp3"></audio>
+    <audio id="audio-pathetique" src="audio/Beethoven-PianoSonata-No8-2nd-2020-AR.mp3"></audio>
+    <audio id="audio-winter" src="audio/Vivaldi-4Seasons-Winter-1st.mp3"></audio>
+    <audio id="audio-spring" src="audio/Vivaldi-4Seasons-Spring-1st.mp3"></audio>
+    <audio id="audio-Nachtmusik" src="audio/Mozart-EineKleine-1st.mp3"></audio>
+    <audio id="audio-debussy-linfille" src="audio/amairo.mp3"></audio>
+    <audio id="audio-debussy-clair" src="audio/Debussy-Clair-de-Lune.mp3"></audio>
+
+    <!-- スクリプト -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tracks = {
+                "Nocturne Op.9 No.2": document.getElementById('audio-nocturne'),
+                "Polonaise Op.53 'Heroic'": document.getElementById('audio-heroic'),
+                "Étude Op.10 No.3 'Tristesse'": document.getElementById('audio-tristesse'),
+                "Piano Sonata No.8 'Grande Sonate pathetique'": document.getElementById('audio-pathetique'),
+                "Winter": document.getElementById('audio-winter'),
+                "Spring": document.getElementById('audio-spring'),
+                "Eine kleine Nachtmusik": document.getElementById('audio-Nachtmusik'),
+                "La Fille aux Cheveux de Lin": document.getElementById('audio-debussy-linfille'),
+                "Clair de Lune": document.getElementById('audio-debussy-clair')
+            };
+
+            const panels = document.querySelectorAll('.work-panel');
+
+            panels.forEach(panel => {
+                panel.addEventListener('click', () => {
+                    const pieceName = panel.dataset.piece;
+
+                    // 全ての音楽を停止
+                    Object.values(tracks).forEach(audio => {
+                        if (audio) {
+                            audio.pause();
+                            audio.currentTime = 0;
+                        }
+                    });
+
+                    // 選択された音楽を再生
+                    if (tracks[pieceName]) {
+                        tracks[pieceName].play().catch(error => {
+                            console.log('Audio playback failed:', error);
+                        });
+                    }
+
+                    // 再生中のパネルの表示を更新
+                    panels.forEach(p => p.classList.remove('playing'));
+                    panel.classList.add('playing');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

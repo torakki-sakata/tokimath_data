@@ -473,18 +473,10 @@
                         <div class="composer-years">(1685-1750)</div>
                     </div>
                     <div class="works-grid">
-                        <div class="work-panel" data-composer="バッハ" data-work="G線上のアリア" data-piece="Air on the G String">
+                        <div class="work-panel" data-composer="バッハ" data-work="G線上のアリア" data-piece="gAria">
                             <div class="work-content">
                                 <div class="work-title">Air on the G String</div>
                                 <div class="work-subtitle">管弦楽組曲第3番より</div>
-                                <div class="play-symbol">◆</div>
-                            </div>
-                        </div>
-                        
-                        <div class="work-panel" data-composer="バッハ" data-work="インヴェンション" data-piece="Invention No.1 BWV 772">
-                            <div class="work-content">
-                                <div class="work-title">Invention No.1</div>
-                                <div class="work-subtitle">インヴェンション第1番</div>
                                 <div class="play-symbol">◆</div>
                             </div>
                         </div>
@@ -498,18 +490,18 @@
                         <div class="composer-years">(1770-1827)</div>
                     </div>
                     <div class="works-grid">
-                        <div class="work-panel" data-composer="ベートーヴェン" data-work="第9番" data-piece="Symphony No.9 'Ode to Joy'">
+                        <div class="work-panel" data-composer="ベートーヴェン" data-work="運命" data-piece="SymphonyNo5">
                             <div class="work-content">
-                                <div class="work-title">Symphony No.9</div>
-                                <div class="work-subtitle">交響曲第9番「歓喜の歌」</div>
+                                <div class="work-title">Symphony No.5</div>
+                                <div class="work-subtitle">交響曲第5番「運命」</div>
                                 <div class="play-symbol">◆</div>
                             </div>
                         </div>
                         
-                        <div class="work-panel" data-composer="ベートーヴェン" data-work="エリーゼ" data-piece="Für Elise WoO 59">
+                        <div class="work-panel" data-composer="ベートーヴェン" data-work="月光" data-piece="Moonlight">
                             <div class="work-content">
-                                <div class="work-title">Für Elise</div>
-                                <div class="work-subtitle">エリーゼのために</div>
+                                <div class="work-title">Piano Sonata No.1</div>
+                                <div class="work-subtitle">ピアノソナタ「月光」</div>
                                 <div class="play-symbol">◆</div>
                             </div>
                         </div>
@@ -539,7 +531,7 @@
                             </div>
                         </div>
                         
-                        <div class="work-panel" data-composer="ドビュッシー" data-work="月の光" data-piece="Clair de Lune">
+                        <div class="work-panel" data-composer="ドビュッシー" data-work="月の光" data-piece="Moon">
                             <div class="work-content">
                                 <div class="work-title">Clair de Lune</div>
                                 <div class="work-subtitle">ベルガマスク組曲「月の光」</div>
@@ -564,10 +556,10 @@
                             </div>
                         </div>
                         
-                        <div class="work-panel" data-composer="モーツァルト" data-work="トルコ行進曲" data-piece="Piano Sonata No.11 'Turkish March'">
+                        <div class="work-panel" data-composer="モーツァルト" data-work="交響曲第25番" data-piece="Symphonym">
                             <div class="work-content">
-                                <div class="work-title">Turkish March</div>
-                                <div class="work-subtitle">ピアノソナタ「トルコ行進曲」</div>
+                                <div class="work-title">SymphonyNo25</div>
+                                <div class="work-subtitle">交響曲第25番</div>
                                 <div class="play-symbol">◆</div>
                             </div>
                         </div>
@@ -607,10 +599,15 @@
     <audio id="audio-nocturne" src="audio/041-Chopin-Nocturne-No2.mp3"></audio>
     <audio id="audio-heroic" src="audio/Chopin-Poronase-No6-Heroic-2019-AR.mp3"></audio>
     <audio id="audio-tristesse" src="audio/Chopin-Etude-wakareno.mp3"></audio>
+    <audio id="audio-gAria" src="audio/J.S.Bach-Air-On-G-2019-AR.mp3"></audio>
+    <audio id="audio-SymphonyNo5" src="audio/Beethoven-Symphony-No5-1st-2019-AR2.mp3"></audio>
+    <audio id="audio-Moonlight" src="audio/Beethoven-MoonlightSonata-1.mp3"></audio>
+    <audio id="audio-Moon" src="audio/Debussy-clairdelune.mp3"></audio>
     <audio id="audio-pathetique" src="audio/Beethoven-PianoSonata-No8-2nd-2020-AR.mp3"></audio>
     <audio id="audio-winter" src="audio/Vivaldi-4Seasons-Winter-1st.mp3"></audio>
     <audio id="audio-spring" src="audio/Vivaldi-4Seasons-Spring-1st.mp3"></audio>
     <audio id="audio-Nachtmusik" src="audio/Mozart-EineKleine-1st.mp3"></audio>
+    <audio id="audio-SymphonyNo25" src="audio/Mozart-SymphonyNo25-1.mp3"></audio> 
     <audio id="audio-debussy-linfille" src="audio/amairo.mp3"></audio>
     <audio id="audio-debussy-clair" src="audio/Debussy-Clair-de-Lune.mp3"></audio>
 
@@ -621,10 +618,15 @@
                 "Nocturne Op.9 No.2": document.getElementById('audio-nocturne'),
                 "Polonaise Op.53 'Heroic'": document.getElementById('audio-heroic'),
                 "Étude Op.10 No.3 'Tristesse'": document.getElementById('audio-tristesse'),
+                "gAria": document.getElementById('audio-gAria'),
+                "SymphonyNo5" : document.getElementById('audio-SymphonyNo5'),
+                "Moonlight": document.getElementById('audio-Moonlight'),
+                "Moon": document.getElementById('audio-Moon'),
                 "Piano Sonata No.8 'Grande Sonate pathetique'": document.getElementById('audio-pathetique'),
                 "Winter": document.getElementById('audio-winter'),
                 "Spring": document.getElementById('audio-spring'),
                 "Eine kleine Nachtmusik": document.getElementById('audio-Nachtmusik'),
+                "Symphonym": document.getElementById('audio-SymphonyNo25'),
                 "La Fille aux Cheveux de Lin": document.getElementById('audio-debussy-linfille'),
                 "Clair de Lune": document.getElementById('audio-debussy-clair')
             };
